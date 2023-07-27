@@ -54,12 +54,15 @@ pub struct ListProtocolsResponse {
 	pub protocols: Vec<u16>,
 }
 
+/// LSPS0 Request List
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum LSPS0Request {
+	/// Request the list all available protocols
 	ListProtocols(ListProtocolsRequest),
 }
 
 impl LSPS0Request {
+	/// The method in string for request
 	pub fn method(&self) -> &str {
 		match self {
 			LSPS0Request::ListProtocols(_) => "lsps0.listprotocols",
@@ -67,9 +70,12 @@ impl LSPS0Request {
 	}
 }
 
+/// LSPS0 Response List
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum LSPS0Response {
+	/// Response the list all available protocols
 	ListProtocols(ListProtocolsResponse),
+	///Error response for listing avaiable protocols
 	ListProtocolsError(ResponseError),
 }
 
