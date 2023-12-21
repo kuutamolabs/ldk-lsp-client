@@ -22,13 +22,15 @@ use crate::lsps2;
 use crate::prelude::{Vec, VecDeque};
 use crate::sync::Mutex;
 
-pub(crate) struct EventQueue {
+/// The event queue for LSP clients/servers
+pub struct EventQueue {
 	queue: Mutex<VecDeque<Event>>,
 	#[cfg(feature = "std")]
 	condvar: std::sync::Condvar,
 }
 
 impl EventQueue {
+	/// New a queue
 	pub fn new() -> Self {
 		let queue = Mutex::new(VecDeque::new());
 		#[cfg(feature = "std")]
@@ -40,6 +42,7 @@ impl EventQueue {
 		Self { queue }
 	}
 
+	/// Put the event inside the queue
 	pub fn enqueue(&self, event: Event) {
 		{
 			let mut queue = self.queue.lock().unwrap();
@@ -50,10 +53,12 @@ impl EventQueue {
 		self.condvar.notify_one();
 	}
 
+	/// Get the text Event
 	pub fn next_event(&self) -> Option<Event> {
 		self.queue.lock().unwrap().pop_front()
 	}
 
+	/// Block and wait for the event
 	#[cfg(feature = "std")]
 	pub fn wait_next_event(&self) -> Event {
 		let mut queue =
@@ -71,6 +76,7 @@ impl EventQueue {
 		event
 	}
 
+	/// Get all rest of the events and clean the queue
 	pub fn get_and_clear_pending_events(&self) -> Vec<Event> {
 		self.queue.lock().unwrap().drain(..).collect()
 	}

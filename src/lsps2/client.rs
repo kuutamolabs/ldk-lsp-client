@@ -174,7 +174,8 @@ impl InboundJITChannel {
 	}
 }
 
-struct PeerState {
+/// The peer state for LSPS2
+pub struct PeerState {
 	inbound_channels_by_id: HashMap<u128, InboundJITChannel>,
 	request_to_cid: HashMap<RequestId, u128>,
 }
@@ -218,7 +219,7 @@ where
 	MQ::Target: MessageQueue,
 {
 	/// Constructs an `LSPS2ClientHandler`.
-	pub(crate) fn new(
+	pub fn new(
 		entropy_source: ES, pending_messages: MQ, pending_events: Arc<EventQueue>,
 		config: LSPS2ClientConfig,
 	) -> Self {
