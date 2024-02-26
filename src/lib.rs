@@ -25,18 +25,18 @@ compile_error!("at least one of the `std` or `no-std` features must be enabled")
 extern crate alloc;
 
 mod prelude {
-	#![allow(unused_imports)]
-	#[cfg(feature = "hashbrown")]
-	extern crate hashbrown;
+    #![allow(unused_imports)]
+    #[cfg(feature = "hashbrown")]
+    extern crate hashbrown;
 
-	#[cfg(feature = "hashbrown")]
-	pub use self::hashbrown::{hash_map, HashMap, HashSet};
-	pub use alloc::{boxed::Box, collections::VecDeque, string::String, vec, vec::Vec};
-	#[cfg(not(feature = "hashbrown"))]
-	pub use std::collections::{hash_map, HashMap, HashSet};
+    #[cfg(feature = "hashbrown")]
+    pub use self::hashbrown::{hash_map, HashMap, HashSet};
+    pub use alloc::{boxed::Box, collections::VecDeque, string::String, vec, vec::Vec};
+    #[cfg(not(feature = "hashbrown"))]
+    pub use std::collections::{hash_map, HashMap, HashSet};
 
-	pub use alloc::borrow::ToOwned;
-	pub use alloc::string::ToString;
+    pub use alloc::borrow::ToOwned;
+    pub use alloc::string::ToString;
 }
 
 pub mod events;
