@@ -752,7 +752,9 @@ where
             LSPS2Message::Request(request_id, request) => match request {
                 LSPS2Request::GetInfo(params) => {
                     eprintln!("DEBUG: handle LSPS2 GetInfo: {params:?}");
-                    self.handle_get_info_request(request_id, counterparty_node_id, params)
+                    let r = self.handle_get_info_request(request_id, counterparty_node_id, params);
+                    eprintln!("{r:?}");
+                    r
                 }
                 LSPS2Request::Buy(params) => {
                     eprintln!("DEBUG: handle LSPS2 Buy: {params:?}");
