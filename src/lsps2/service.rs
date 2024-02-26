@@ -596,10 +596,20 @@ where
     fn handle_get_info_request(
         &self, request_id: RequestId, counterparty_node_id: &PublicKey, params: GetInfoRequest,
     ) -> Result<(), LightningError> {
-        let mut outer_state_lock = self.per_peer_state.write().unwrap();
+        let mut outer_state_lock = if let Ok(l) = self.per_peer_state.write() {
+            l
+        } else {
+            eprintln!("get outer state lock fail");
+            panic!("get outer state lock fail");
+        };
         let inner_state_lock: &mut Mutex<PeerState> =
             outer_state_lock.entry(*counterparty_node_id).or_insert(Mutex::new(PeerState::new()));
-        let mut peer_state_lock = inner_state_lock.lock().unwrap();
+        let mut peer_state_lock = if let Ok(l) = inner_state_lock.lock(){
+            l
+        } else {
+            eprintln!("get outer state lock fail");
+            panic!("get outer state lock fail");
+        };
         peer_state_lock
             .pending_requests
             .insert(request_id.clone(), LSPS2Request::GetInfo(params.clone()));
@@ -741,9 +751,11 @@ where
         match message {
             LSPS2Message::Request(request_id, request) => match request {
                 LSPS2Request::GetInfo(params) => {
+                    eprintln!("DEBUG: handle LSPS2 GetInfo: {params:?}");
                     self.handle_get_info_request(request_id, counterparty_node_id, params)
                 }
                 LSPS2Request::Buy(params) => {
+                    eprintln!("DEBUG: handle LSPS2 Buy: {params:?}");
                     self.handle_buy_request(request_id, counterparty_node_id, params)
                 }
             },
